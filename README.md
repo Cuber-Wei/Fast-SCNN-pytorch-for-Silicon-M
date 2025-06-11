@@ -14,14 +14,10 @@ A PyTorch implementation of [Fast-SCNN: Fast Semantic Segmentation Network](http
 - <a href='#references'>Reference</a>
 
 ## Installation
-- Python 3.x. Recommended using [Anaconda3](https://www.anaconda.com/distribution/)
-- [PyTorch 1.0](https://pytorch.org/get-started/locally/). Install PyTorch by selecting your environment on the website and running the appropriate command. Such as:
-  ```
-  conda install pytorch torchvision cudatoolkit=9.0 -c pytorch
-  ```
-  Or you can use `uv` to sync the vitural environment later.
-- Clone this repository.
-- For users that use `uv`, run command `uv sync` to sync the same environment as I have. 
+- Python 3.13. Recommended using [uv](https://docs.astral.sh/uv/).
+- [PyTorch 2.7](https://pytorch.org/get-started/locally/). Since I use `uv` to manage the dev environment, you can use `uv` to sync the vitural environment later.
+- Clone this repository. And change directory into the project folder.
+- Run command `uv sync` to sync the same environment as I have. 
 - Download the dataset by following the [instructions](#datasets) below.
 - Note: For training, we currently support [cityscapes](https://www.cityscapes-dataset.com/), and aim to add [VOC](http://host.robots.ox.ac.uk/pascal/VOC/) and [ADE20K](http://groups.csail.mit.edu/vision/datasets/ADE20K/).
 
@@ -32,26 +28,33 @@ A PyTorch implementation of [Fast-SCNN: Fast Semantic Segmentation Network](http
 - By default, we assume you have downloaded the cityscapes dataset in the `./datasets/citys` dir.
 - To train Fast-SCNN using the train script the parameters listed in `train.py` as a flag or manually change them.
 ```Shell
-python train.py --model fast_scnn --dataset citys
+python3 train.py --model fast_scnn --dataset citys
+# for uv
+uv run train.py --model fast_scnn --dataset citys
 ```
 
 ## Evaluation
 To evaluate a trained network:
 ```Shell
-python eval.py
+python3 eval.py
+# for uv
+uv run eval.py
 ```
 
 ## Demo
 Running a demo:
 ```Shell
-python demo.py --model fast_scnn --input-pic './png/berlin_000000_000019_leftImg8bit.png'
+python3 demo.py --model fast_scnn --input-pic './datasets/citys/leftImg8bit/val/lindau/lindau_000012_000019_leftImg8bit.png' --contrast True
+# for uv
+uv run demo.py --model fast_scnn --input-pic './datasets/citys/leftImg8bit/val/lindau/lindau_000012_000019_leftImg8bit.png' --contrast True
 ```
 
 ## Results
 |Method|Dataset|crop_size|mIoU|pixAcc|
 |:-:|:-:|:-:|:-:|:-:|
 |Fast-SCNN(paper)|cityscapes||||
-|Fast-SCNN(ours)|cityscapes|768|54.84%|92.37%|
+|Fast-SCNN(fork-from)|cityscapes|768|54.84%|92.37%|
+|Fast-SCNN(ours)|cityscapes|768|56.64%|93.96%|
 
 Note: The result based on crop_size=768, which is different with paper.
 

@@ -1,7 +1,7 @@
 [project]
 name = "fast-scnn-pytorch"
 version = "0.1.0"
-description = "Add your description here"
+description = "Fast-SCNN-pytorch-for-Silicon-M"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

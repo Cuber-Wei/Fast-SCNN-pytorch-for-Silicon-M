@@ -1,7 +1,7 @@
 from .cityscapes import CitySegmentation
 
 datasets = {
-    'citys': CitySegmentation,
+    "citys": CitySegmentation,
 }
 
 

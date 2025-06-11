@@ -105,23 +105,32 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# ruff
+.ruff_cache/
+
 # pycharm
 .idea
 
+# vscode
+.vscode/
+
+# cursor
+.cursorrules
+
 # .DS_Store
 .DS_Store
+*/.DS_Store
 
 # datasets
 datasets
 
-# pretraind model
-weights/
-
 # result
 test_result/
+test_result_*/
 
 # personal data analysis scripts
 misc/
-weights-backup/*.pth
+*.pth
+combine_pic.py
 *.zip
 test*.py

@@ -3,15 +3,21 @@ from __future__ import division
 import threading
 import numpy as np
 
-__all__ = ['SegmentationMetric', 'batch_pix_accuracy', 'batch_intersection_union',
-           'pixelAccuracy', 'intersectionAndUnion', 'hist_info', 'compute_score']
+__all__ = [
+    "SegmentationMetric",
+    "batch_pix_accuracy",
+    "batch_intersection_union",
+    "pixelAccuracy",
+    "intersectionAndUnion",
+    "hist_info",
+    "compute_score",
+]
 
 """Evaluation Metrics for Semantic Segmentation"""
 
 
 class SegmentationMetric(object):
-    """Computes pixAcc and mIoU metric scores
-    """
+    """Computes pixAcc and mIoU metric scores"""
 
     def __init__(self, nclass):
         super(SegmentationMetric, self).__init__()
@@ -32,8 +38,13 @@ class SegmentationMetric(object):
         if isinstance(preds, np.ndarray):
             self.evaluate_worker(preds, labels)
         elif isinstance(preds, (list, tuple)):
-            threads = [threading.Thread(target=self.evaluate_worker, args=(pred, label), )
-                       for (pred, label) in zip(preds, labels)]
+            threads = [
+                threading.Thread(
+                    target=self.evaluate_worker,
+                    args=(pred, label),
+                )
+                for (pred, label) in zip(preds, labels)
+            ]
             for thread in threads:
                 thread.start()
             for thread in threads:
@@ -74,8 +85,8 @@ def batch_pix_accuracy(predict, target):
     """PixAcc"""
     # inputs are numpy array, output 4D, target 3D
     assert predict.shape == target.shape
-    predict = predict.astype('int64') + 1
-    target = target.astype('int64') + 1
+    predict = predict.astype("int64") + 1
+    target = target.astype("int64") + 1
 
     pixel_labeled = np.sum(target > 0)
     pixel_correct = np.sum((predict == target) * (target > 0))
@@ -90,8 +101,8 @@ def batch_intersection_union(predict, target, nclass):
     mini = 1
     maxi = nclass
     nbins = nclass
-    predict = predict.astype('int64') + 1
-    target = target.astype('int64') + 1
+    predict = predict.astype("int64") + 1
+    target = target.astype("int64") + 1
 
     predict = predict * (target > 0).astype(predict.dtype)
     intersection = predict * (predict == target)
@@ -101,7 +112,9 @@ def batch_intersection_union(predict, target, nclass):
     area_pred, _ = np.histogram(predict, bins=nbins, range=(mini, maxi))
     area_lab, _ = np.histogram(target, bins=nbins, range=(mini, maxi))
     area_union = area_pred + area_lab - area_inter
-    assert (area_inter <= area_union).all(), "Intersection area should be smaller than Union area"
+    assert (area_inter <= area_union).all(), (
+        "Intersection area should be smaller than Union area"
+    )
     return area_inter, area_union
 
 
@@ -137,7 +150,9 @@ def intersectionAndUnion(imPred, imLab, numClass):
 
     # Compute area intersection:
     intersection = imPred * (imPred == imLab)
-    (area_intersection, _) = np.histogram(intersection, bins=numClass, range=(1, numClass))
+    (area_intersection, _) = np.histogram(
+        intersection, bins=numClass, range=(1, numClass)
+    )
 
     # Compute area union:
     (area_pred, _) = np.histogram(imPred, bins=numClass, range=(1, numClass))
@@ -152,8 +167,13 @@ def hist_info(pred, label, num_cls):
     labeled = np.sum(k)
     correct = np.sum((pred[k] == label[k]))
 
-    return np.bincount(num_cls * label[k].astype(int) + pred[k], minlength=num_cls ** 2).reshape(num_cls,
-                                                                                                 num_cls), labeled, correct
+    return (
+        np.bincount(
+            num_cls * label[k].astype(int) + pred[k], minlength=num_cls**2
+        ).reshape(num_cls, num_cls),
+        labeled,
+        correct,
+    )
 
 
 def compute_score(hist, correct, labeled):
