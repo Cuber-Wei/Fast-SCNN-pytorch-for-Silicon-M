@@ -19,7 +19,9 @@ A PyTorch implementation of [Fast-SCNN: Fast Semantic Segmentation Network](http
   ```
   conda install pytorch torchvision cudatoolkit=9.0 -c pytorch
   ```
+  Or you can use `uv` to sync the vitural environment later.
 - Clone this repository.
+- For users that use `uv`, run command `uv sync` to sync the same environment as I have. 
 - Download the dataset by following the [instructions](#datasets) below.
 - Note: For training, we currently support [cityscapes](https://www.cityscapes-dataset.com/), and aim to add [VOC](http://host.robots.ox.ac.uk/pascal/VOC/) and [ADE20K](http://groups.csail.mit.edu/vision/datasets/ADE20K/).
 

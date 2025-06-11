@@ -37,6 +37,8 @@ class Evaluator(object):
 
     def eval(self):
         self.model.eval()
+        accu_sum = 0
+        mIoU_sum = 0
         for i, (image, label) in enumerate(self.val_loader):
             image = image.to(self.args.device)
 
@@ -48,11 +50,16 @@ class Evaluator(object):
 
             self.metric.update(pred, label)
             pixAcc, mIoU = self.metric.get()
+            accu_sum += pixAcc
+            mIoU_sum += mIoU
             print('Sample %d, validation pixAcc: %.3f%%, mIoU: %.3f%%' % (i + 1, pixAcc * 100, mIoU * 100))
 
             predict = pred.squeeze(0)
             mask = get_color_pallete(predict, self.args.dataset)
             mask.save(os.path.join(self.outdir, 'seg_{}.png'.format(i)))
+        print(f'Average: pixAcc: {100*accu_sum / len(self.val_loader):.3f}, mIoU: {100*mIoU_sum / len(self.val_loader):.3f}')
+        with open("./evalRes.txt", "a") as f:
+            f.write(f'Epoch: {self.args.idx}, Average: pixAcc: {100*accu_sum / len(self.val_loader):.3f}%, mIoU: {100*mIoU_sum / len(self.val_loader):.3f}%\n')
 
 
 if __name__ == '__main__':

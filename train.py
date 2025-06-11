@@ -2,6 +2,7 @@ import os
 import argparse
 import time
 import shutil
+import logging
 
 import torch
 import torch.utils.data as data
@@ -14,6 +15,7 @@ from utils.loss import MixSoftmaxCrossEntropyLoss, MixSoftmaxCrossEntropyOHEMLos
 from utils.lr_scheduler import LRScheduler
 from utils.metric import SegmentationMetric
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='./train.log', filemode='w')
 
 def parse_args():
     """Training Options for Segmentation Experiments"""
@@ -56,12 +58,21 @@ def parse_args():
                         help='evaluation only')
     parser.add_argument('--no-val', action='store_true', default=True,
                         help='skip validation during training')
+    # tmp
+    parser.add_argument('--idx', type=int, default=0,
+                        help='index of the training')
     # the parser
     args = parser.parse_args()
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    cudnn.benchmark = True
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+    elif torch.cuda.is_available():
+        device = torch.device("cuda:0")
+    else:
+        device = torch.device("cpu")
+    if device.type == "cuda":
+        cudnn.benchmark = True
     args.device = device
-    print(args)
+    print(f"Using device: {device}")
     return args
 
 
@@ -87,7 +98,7 @@ class Trainer(object):
 
         # create network
         self.model = get_fast_scnn(dataset=args.dataset, aux=args.aux)
-        if torch.cuda.device_count() > 1:
+        if args.device.type == "cuda" and torch.cuda.device_count() > 1:
             self.model = torch.nn.DataParallel(self.model, device_ids=[0, 1, 2])
         self.model.to(args.device)
 
@@ -97,7 +108,7 @@ class Trainer(object):
                 name, ext = os.path.splitext(args.resume)
                 assert ext == '.pkl' or '.pth', 'Sorry only .pth and .pkl files supported.'
                 print('Resuming training, loading {}...'.format(args.resume))
-                self.model.load_state_dict(torch.load(args.resume, map_location=lambda storage, loc: storage))
+                self.model.load_state_dict(torch.load(args.resume, map_location=args.device))
 
         # create criterion
         self.criterion = MixSoftmaxCrossEntropyOHEMLoss(aux=args.aux, aux_weight=args.aux_weight,
@@ -144,10 +155,16 @@ class Trainer(object):
                     print('Epoch: [%2d/%2d] Iter [%4d/%4d] || Time: %4.4f sec || lr: %.8f || Loss: %.4f' % (
                         epoch, args.epochs, i + 1, len(self.train_loader),
                         time.time() - start_time, cur_lr, loss.item()))
+                    logging.info('Epoch: [%2d/%2d] Iter [%4d/%4d] || Time: %4.4f sec || lr: %.8f || Loss: %.4f' % (
+                        epoch, args.epochs, i + 1, len(self.train_loader),
+                        time.time() - start_time, cur_lr, loss.item()))
 
             if self.args.no_val:
                 # save every epoch
                 save_checkpoint(self.model, self.args, is_best=False)
+                if epoch % 10 == 0:
+                    torch.save(self.model.state_dict(), f"./weights-backup/{self.args.model}_{self.args.dataset}-{epoch}.pth")
+                    print(f"Saved model to ./weights-backup/{self.args.model}_{self.args.dataset}-{epoch}.pth")
             else:
                 self.validation(epoch)
 

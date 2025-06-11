@@ -108,6 +108,9 @@ venv.bak/
 # pycharm
 .idea
 
+# .DS_Store
+.DS_Store
+
 # datasets
 datasets
 
@@ -116,3 +119,9 @@ weights/
 
 # result
 test_result/
+
+# personal data analysis scripts
+misc/
+weights-backup/*.pth
+*.zip
+test*.py

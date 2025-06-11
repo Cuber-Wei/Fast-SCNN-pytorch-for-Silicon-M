@@ -129,6 +129,15 @@ class PyramidPooling(nn.Module):
 
     def pool(self, x, size):
         avgpool = nn.AdaptiveAvgPool2d(size)
+        # Handle MPS device limitation with AdaptiveAvgPool2d
+        if x.device.type == 'mps':
+            # Check if input size is divisible by output size
+            h, w = x.size()[2:]
+            if h % size != 0 or w % size != 0:
+                # Temporarily move to CPU for pooling operation
+                x_cpu = x.cpu()
+                result = avgpool(x_cpu)
+                return result.to(x.device)
         return avgpool(x)
 
     def upsample(self, x, size):

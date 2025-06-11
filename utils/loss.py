@@ -85,7 +85,7 @@ class SoftmaxCrossEntropyOHEMLoss(nn.Module):
         input_label[valid_inds] = label
         valid_flag_new = input_label != self.ignore_label
         # print(np.sum(valid_flag_new))
-        target = Variable(torch.from_numpy(input_label.reshape(target.size())).long().cuda())
+        target = Variable(torch.from_numpy(input_label.reshape(target.size())).long().to(predict.device))
 
         return self.criterion(predict, target)
 
