@@ -107,6 +107,8 @@ def parse_args():
     )
     # epoch index, for specific epoch evaluation
     parser.add_argument("--idx", type=int, default=0, help="index of the training")
+    parser.add_argument("--epoch-start", type=int, default=0, help="start eval epoch")
+    parser.add_argument("--epoch-end", type=int, default=160, help="end eval epoch")
     # the parser
     args = parser.parse_args()
     if torch.backends.mps.is_available():

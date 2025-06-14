@@ -54,7 +54,7 @@ uv run demo.py --model fast_scnn --input-pic './datasets/citys/leftImg8bit/val/l
 |:-:|:-:|:-:|:-:|:-:|
 |Fast-SCNN(paper)|cityscapes||||
 |Fast-SCNN(fork-from)|cityscapes|768|54.84%|92.37%|
-|Fast-SCNN(ours)|cityscapes|768|56.64%|93.96%|
+|Fast-SCNN(ours)|cityscapes|768|60.88%|94.42%|
 
 Note: The result based on crop_size=768, which is different with paper.
 

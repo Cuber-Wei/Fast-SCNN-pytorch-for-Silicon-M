@@ -134,3 +134,4 @@ misc/
 combine_pic.py
 *.zip
 test*.py
+evalRes.txt

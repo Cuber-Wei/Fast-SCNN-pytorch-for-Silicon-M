@@ -46,7 +46,7 @@ class Evaluator(object):
         print("Finished loading model!")
         logging.info("Finished loading model!")
         logging.info(
-            f"Model: {args.model}, Dataset: {args.dataset}, Aux: {args.aux}, Pretrained: {args.pretrained}, From Epoch: {args.idx}"
+            f"Model: {args.model}, Dataset: {args.dataset}, Aux: {args.aux}, From Epoch: {args.idx}"
         )
 
         self.metric = SegmentationMetric(val_dataset.num_class)
