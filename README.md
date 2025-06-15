@@ -58,8 +58,11 @@ uv run demo.py --model fast_scnn --input-pic './datasets/citys/leftImg8bit/val/l
 
 Note: The result based on crop_size=768, which is different with paper.
 
-<img src="./png/frankfurt_000001_058914_leftImg8bit.png" width="280" /><img src="./png/frankfurt_000001_058914_gtFine_color.png" width="280" /><img src="./png/frankfurt_000001_058914_seg.png" width="280" />
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(a) test image &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(b) ground truth &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(c) predicted result
+<img src="./png/combined-result-visualization.png" />
+
+> The left column is the Test Image we inputed;
+> The middle column is the Ground Truth;
+> The right column is the Predicted Result produced by the model.
 
 ## TODO
 - [ ] add distributed training

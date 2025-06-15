@@ -95,6 +95,12 @@ def parse_args():
         default="./weights",
         help="Directory for saving checkpoint models",
     )
+    parser.add_argument(
+        "--backup-freq",
+        type=int,
+        default=5,
+        help="save frequency (default: 5)",
+    )
     # evaluation only
     parser.add_argument(
         "--eval", action="store_true", default=False, help="evaluation only"
@@ -258,7 +264,7 @@ class Trainer(object):
             if self.args.no_val:
                 # save every epoch as checkpoint
                 save_checkpoint(self.model, self.args, is_best=False)
-                if epoch % 5 == 0:
+                if epoch % self.args.backup_freq == 0 or epoch == self.args.epochs - 1:
                     # save every 5 epochs for evalation
                     torch.save(
                         self.model.state_dict(),

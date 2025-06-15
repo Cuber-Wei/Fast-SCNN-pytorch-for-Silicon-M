@@ -44,6 +44,8 @@ args = parser.parse_args()
 
 
 def demo(input_pic=None):
+    if input_pic is None:
+        input_pic = args.input_pic
     device = torch.device(
         "cuda"
         if torch.cuda.is_available()
@@ -62,9 +64,7 @@ def demo(input_pic=None):
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ]
     )
-    image = Image.open(args.input_pic if input_pic is None else input_pic).convert(
-        "RGB"
-    )
+    image = Image.open(input_pic).convert("RGB")
     image = transform(image).unsqueeze(0).to(device)
     model = get_fast_scnn(
         args.dataset, pretrained=True, root=args.weights_folder, map_cpu=args.cpu
@@ -75,17 +75,17 @@ def demo(input_pic=None):
         outputs = model(image)
     pred = torch.argmax(outputs[0], 1).squeeze(0).cpu().data.numpy()
     mask = get_color_pallete(pred, args.dataset)
-    outname = os.path.splitext(os.path.split(args.input_pic)[-1])[0] + ".png"
+    outname = os.path.splitext(os.path.split(input_pic)[-1])[0] + ".png"
     mask.save(os.path.join(args.outdir, outname))
     if args.contrast:
         import matplotlib.pyplot as plt
 
         fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
 
-        ax1.imshow(Image.open(args.input_pic).convert("RGB"))
+        ax1.imshow(Image.open(input_pic).convert("RGB"))
         ax1.axis("off")
 
-        dirs, image_name = os.path.split(args.input_pic)[-2:]
+        dirs, image_name = os.path.split(input_pic)[-2:]
         dirs = os.path.split(dirs)[-1]
         file_name = "_".join(image_name.split("_")[:3]) + "_gtFine_color.png"
         groundtruth_path = os.path.join("./datasets/citys/gtFine/val/", dirs, file_name)

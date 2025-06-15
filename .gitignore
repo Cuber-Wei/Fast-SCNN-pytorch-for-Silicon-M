@@ -54,7 +54,6 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 
@@ -130,8 +129,7 @@ test_result_*/
 
 # personal data analysis scripts
 misc/
-*.pth
-combine_pic.py
+weights-backup
 *.zip
 test*.py
 evalRes.txt
